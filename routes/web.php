@@ -19,7 +19,6 @@ Route::middleware(['auth'])->group(function () {
 
 // User Routes for Keluarga Management
 Route::middleware(['auth'])->group(function () {
-
     Route::get('dashboard', [AdminController::class, 'route'])->name('dashboard');
     Route::get('user/data/keluarga', [UserController::class, 'keluarga'])->name('user.keluarga');
     Route::post('user/data/keluarga/add', [KeluargaController::class, 'storeUser'])->name('user.keluarga.store');
@@ -62,6 +61,8 @@ Route::put('keluarga/detail/public/update/pasangan/{id}', [SilsilahController::c
 Route::delete('keluarga/detail/public/delete/pasangan/{id}', [SilsilahController::class, 'delete_pasangan_anggota_keluarga'])->name('pasangan.anggota.keluarga.delete');
 
 Route::get('keluarga/detail/private/{id}', [KeluargaController::class, 'detail_private'])->name('keluarga.detail.private');
+
+Route::get('keluarga/detail/public/data/keluarga/pohon_output/{id}', [KeluargaController::class, 'pohon_output'])->name('keluarga.detail.pohon_output');
 
 Route::fallback(function () {
     if (!Auth::check()) {

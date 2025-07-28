@@ -44,9 +44,6 @@
                                 style="width: 16%; background-color: #696cff !important; color: white; height: 60px; vertical-align: middle; border: 1px solid white !important;">
                                 Pemilik</th>
                             <th class="text-center"
-                                style="width: 16%; background-color: #696cff !important; color: white; height: 60px; vertical-align: middle; border: 1px solid white !important;">
-                                Tipe Keluarga</th>
-                            <th class="text-center"
                                 style="width: 20%; background-color: #696cff !important; color: white; height: 60px; vertical-align: middle; border: 1px solid white !important;">
                                 Deskripsi</th>
                             <th class="text-center"
@@ -71,17 +68,6 @@
                                     <div class="d-flex align-items-center justify-content-center">
                                         <span class="fw-medium">{{ $Trah->created_by }}</span>
                                     </div>
-                                </td>
-                                <td class="text-center" style="border: 1px solid #dee2e6;">
-                                    @if($Trah->visibility === 'public')
-                                        <span class="badge bg-success-subtle text-success rounded-pill">
-                                            Publik
-                                        </span>
-                                    @else
-                                        <span class="badge bg-warning-subtle text-warning rounded-pill">
-                                            Privat
-                                        </span>
-                                    @endif
                                 </td>
                                 <td class="text-center" style="border: 1px solid #dee2e6;">
                                     <span class="text-muted">
@@ -120,11 +106,20 @@
                                         </button>
 
                                         <!-- Share Button -->
-                                        <button class="btn btn-sm btn-outline-info"
-                                            onclick="copyShareLink('{{ route('keluarga.detail.public', $Trah->id) }}')"
-                                            data-bs-toggle="tooltip" title="Bagikan Link">
-                                            Bagikan
-                                        </button>
+                                         @if ($Trah->visibility === 'public')
+                                         <button class="btn btn-sm btn-outline-info"
+                                             onclick="copyShareLink('{{ route('keluarga.detail.public', $Trah->id) }}')"
+                                             data-bs-toggle="tooltip" title="Bagikan Link">
+                                             Bagikan
+                                         </button>
+                                         @endif
+                                         @if ($Trah->visibility === 'private')
+                                         <button class="btn btn-sm btn-outline-info"
+                                             onclick="copyShareLink('{{ route('keluarga.detail.private', $Trah->id) }}')"
+                                             data-bs-toggle="tooltip" title="Bagikan Link">
+                                             Bagikan
+                                         </button>
+                                         @endif
                                     </div>
                                 </td>
                             </tr>
@@ -173,23 +168,6 @@
                                     <label for="deskripsi-trah" class="form-label">Deskripsi</label>
                                     <input type="text" id="deskripsi-trah" name="description" class="form-control"
                                         placeholder="Deskripsi Singkat Keluarga">
-                                </div>
-                            </div>
-                            <div class="row g-4">
-                                <div class="col d-flex justify-content-start">
-                                    <div class="form-check-reverse form-switch mb-2">
-                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
-                                        <label class="form-check-label" for="flexSwitchCheckDefault">Keluarga
-                                            Privat</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row g-x-4 password-section" style="display: none;">
-                                <!-- Tambahkan class dan sembunyikan awal -->
-                                <label class="form-label">Password<span style="color: red">*</span></label>
-                                <div class="input-group mb-4">
-                                    <input type="password" id="passwordSection" name="password" class="form-control"
-                                        aria-label="Password input">
                                 </div>
                             </div>
                         </div>
@@ -254,18 +232,6 @@
                                         <label for="deskripsi-trah" class="form-label">Deskripsi</label>
                                         <input type="text" id="deskripsi-trah" name="description" class="form-control"
                                             placeholder="Deskripsi Singkat Keluarga" value="{{ $Trah->description }}">
-                                    </div>
-                                    <div class="col mb-0">
-                                        <label for="created-by" class="form-label">Pemilik</label>
-                                        <input type="text" id="created-by" name="owner" class="form-control"
-                                            value="{{ auth()->user()->name }}" required readonly>
-                                    </div>
-                                </div>
-                                <div class="row g-x-4">
-                                    <label class="form-label">Password (*Kosongkan Jika Tidak Diubah)</label>
-                                    <div class="input-group mb-4">
-                                        <input type="password" id="password" name="password" class="form-control"
-                                            aria-label="Password input">
                                     </div>
                                 </div>
                             </div>

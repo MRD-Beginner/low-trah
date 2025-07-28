@@ -309,10 +309,6 @@
         <div class="card-body">
             <div class="container flex-wrap overflow-auto">
                 <div class="row justify-center">
-                    {{-- <h1 class="fw-bold text-center mb-4"
-                        style="color: #000 !important; text-transform: capitalize;">
-                        {{ $trah->trah_name }} Family Tree
-                    </h1> --}}
                     <div class="tree justify-content-center">
                         <ul>
                             @foreach ($rootMember as $member)
@@ -324,4 +320,9 @@
             </div>
         </div>
     </div>
+    <a href="{{ route('keluarga.detail.pohon_output', $tree_id) }}"
+        style="position: fixed; bottom: 32px; right: 32px; z-index: 9999; background: #6366f1; color: white; border: none; border-radius: 50%; width: 56px; height: 56px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none;"
+        title="Cetak Halaman (Output)">
+        <i class="fa fa-print"></i>
+    </a>
 </x-app-layout>

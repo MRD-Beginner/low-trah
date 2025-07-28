@@ -1,15 +1,12 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\AnggotaKeluarga as Anggota_Keluarga;
+use App\Models\Trah;
+use Illuminate\Http\Request;
 
 class LogicController extends Controller
 {
-
-
-
     public function compare(Request $request, $tree_id)
     {
 
@@ -27,35 +24,19 @@ class LogicController extends Controller
             $person2 = Anggota_Keluarga::where('nama', $request->name2)->where('tree_id', $tree_id)->first();
 
             if ($person1 && $person2) {
-                // Person1 -> Person2
-                //BFS
                 // Mencari jalur dari Person 1 ke Person 2
-                $path = $this->bfs($person1, $person2->id);
+                $path = $this->dfs($person1, $person2->id);
                 $relationshipDetails = $path
                     ? $this->relationshipPath($path, $person1->nama, $person2->nama)
                     : ['relation' => 'Tidak ada hubungan yang ditemukan.', 'detailedPath' => []];
 
                 // Mencari jalur dari Person 2 ke Person 1
-                $pathRev = $this->bfs($person2, $person1->id);
+                $pathRev = $this->dfs($person2, $person1->id);
                 $relationshipDetailsReversed = $pathRev
                     ? $this->relationshipPath($pathRev, $person2->nama, $person1->nama)
                     : ['relation' => 'Tidak ada hubungan yang ditemukan.', 'detailedPath' => []];
 
-                //DFS
-                // $visited = [];
-                // $path = [];
-                // $found = $this->dfs($person1, $person2->id, $visited, $path);
-                // $relationshipDetails = $found
-                //     ? $this->relationshipPath($path, $person1->nama, $person2->nama)
-                //     : 'Tidak ada hubungan yang ditemukan.';
 
-                // // Person2 -> Person1 (reversed)
-                // $visitedRev = [];
-                // $pathRev = [];
-                // $foundRev = $this->dfs($person2, $person1->id, $visitedRev, $pathRev);
-                // $relationshipDetailsReversed = $foundRev
-                //     ? $this->relationshipPath($pathRev, $person2->nama, $person1->nama)
-                //     : 'Tidak ada hubungan yang ditemukan.';
             }
         }
         return view('public_detail', [
@@ -71,77 +52,51 @@ class LogicController extends Controller
     }
 
 
-    // public function dfs($current, $targetId, &$visited, &$path)
-    // {
-    //     if (in_array($current->id, $visited)) return false;
-
-    //     $visited[] = $current->id;
-    //     $path[] = $current;
-
-    //     if ($current->id == $targetId) return true;
-
-    //     // Cek ke atas
-    //     if ($current->parent) {
-    //         if ($this->dfs($current->parent, $targetId, $visited, $path)) return true;
-    //     }
-
-    //     // Cek ke bawah
-    //     foreach ($current->children as $child) {
-    //         if ($this->dfs($child, $targetId, $visited, $path)) return true;
-    //     }
-
-    //     // Cek ke samping
-    //     if ($current->parent) {
-    //         foreach ($current->parent->children as $sibling) {
-    //             if ($sibling->id != $current->id) {
-    //                 if ($this->dfs($sibling, $targetId, $visited, $path)) return true;
-    //             }
-    //         }
-    //     }
-
-    //     array_pop($path);
-    //     return false;
-    // }
 
 
-    public function bfs($start, $targetId)
+
+    public function dfs($start, $targetId)
     {
-        $queue = [[$start, [$start]]];
-        $visited = [$start->id => true];
+        $visited = [];
+        $path = [];
 
-        while (!empty($queue)) {
-            [$current, $path] = array_shift($queue);
-
-            if ($current->id == $targetId) {
-                return $path;
-            }
-
-            // Tambahkan anak
-            foreach ($current->children as $child) {
-                if (!isset($visited[$child->id])) {
-                    $visited[$child->id] = true;
-                    $queue[] = [$child, array_merge($path, [$child])];
-                }
-            }
-
-            // Tambahkan parent
-            if ($current->parent && !isset($visited[$current->parent->id])) {
-                $visited[$current->parent->id] = true;
-                $queue[] = [$current->parent, array_merge($path, [$current->parent])];
-            }
-
-            // Tambahkan saudara kandung
-            if ($current->parent) {
-                foreach ($current->parent->children as $sibling) {
-                    if ($sibling->id !== $current->id && !isset($visited[$sibling->id])) {
-                        $visited[$sibling->id] = true;
-                        $queue[] = [$sibling, array_merge($path, [$sibling])];
-                    }
-                }
-            }
+        if ($this->dfsRecursive($start, $targetId, $visited, $path)) {
+            return $path;
         }
 
         return null;
+    }
+
+
+    private function dfsRecursive($current, $targetId, &$visited, &$path)
+    {
+        if (isset($visited[$current->id])) {
+            return false;
+        }
+
+        $visited[$current->id] = true;
+        $path[] = $current;
+
+        if ($current->id == $targetId) {
+            return true;
+        }
+
+        // ke bawah
+        foreach ($current->children as $child) {
+            if ($this->dfsRecursive($child, $targetId, $visited, $path)) {
+                return true;
+            }
+        }
+
+        // keatas
+        if ($current->parent) {
+            if ($this->dfsRecursive($current->parent, $targetId, $visited, $path)) {
+                return true;
+            }
+        }
+
+        array_pop($path);
+        return false;
     }
 
 
@@ -288,9 +243,9 @@ class LogicController extends Controller
                     $mainRelation = "{$first->nama} " . $relations['nak-sanak'][$jenis_kelamin] . " {$last->nama} (dari Eyang {$gp1->nama})";
                     // Logika penentuan panggilan berdasarkan urutan lahir orang tua
                     $callOutRelation = '';
-                    if ($p1->urutan > $p2->urutan) { // Ortu #1 lebih muda, maka #2 lebih tua
+                    if ($p1->urutan > $p2->urutan) {
                         $callOutRelation = ($last->jenis_kelamin == 'Laki-Laki') ? 'kangmas sepupu' : 'mbakyu sepupu';
-                    } else { // Ortu #1 lebih tua (atau sama), maka #2 lebih muda
+                    } else {
                         $callOutRelation = ($last->jenis_kelamin == 'Laki-Laki') ? 'adhik sepupu lanang' : 'adhik sepupu wedok';
                     }
                     return $mainRelation . ".<br>{$first->nama} memanggil {$last->nama} dengan sebutan {$callOutRelation}.";
@@ -302,7 +257,7 @@ class LogicController extends Controller
                     $mainRelation = "{$first->nama} " . $relations['misanan'][$jenis_kelamin] . " {$last->nama} (dari Buyut {$ggp1->nama})";
 
                     $callOutRelation = '';
-                    if ($gp1->urutan > $gp2->urutan) { // Kakek/Nenek #1 lebih muda
+                    if ($gp1->urutan > $gp2->urutan) {
                         $callOutRelation = ($last->jenis_kelamin == 'Laki-Laki') ? 'kangmas sepupu' : 'mbakyu sepupu';
                     } else {
                         $callOutRelation = ($last->jenis_kelamin == 'Laki-Laki') ? 'adhik sepupu lanang' : 'adhik sepupu wedok';
@@ -317,7 +272,7 @@ class LogicController extends Controller
 
                     // Logika penentuan panggilan berdasarkan urutan lahir buyut
                     $callOutRelation = '';
-                    if ($ggp1->urutan > $ggp2->urutan) { // Buyut #1 lebih muda
+                    if ($ggp1->urutan > $ggp2->urutan) {
                         $callOutRelation = ($last->jenis_kelamin == 'Laki-Laki') ? 'kangmas sepupu' : 'mbakyu sepupu';
                     } else {
                         $callOutRelation = ($last->jenis_kelamin == 'Laki-Laki') ? 'adhik sepupu lanang' : 'adhik sepupu wedok';
@@ -327,7 +282,7 @@ class LogicController extends Controller
             }
         }
 
-         // 3. uncle nephew langsung
+            // 3. uncle nephew langsung
         if (abs($depth) === 1) {
             if ($depth === 1) {
                 if ($first->parent_id && optional($last->parent)->parent_id && $first->parent_id === $last->parent->parent_id) {
@@ -392,7 +347,7 @@ class LogicController extends Controller
         }
 
         return "{$first->nama} dan {$last->nama} memiliki hubungan keluarga jauh";
-    }
+        }
 
     // JALUR HUBUNGAN
     public function relationshipPath($path, $firstPersonName, $secondPersonName)
@@ -427,26 +382,6 @@ class LogicController extends Controller
                 $detailedPath[] = " {$current->nama} {$relation}ke-{$current->urutan} dari {$next->nama}";
                 continue;
             }
-            //3. hubungan horizontal
-            elseif ($current->parent_id !== null && $current->parent_id === $next->parent_id) {
-                $relationText = null;
-
-                // Cek apakah 'current' lebih tua
-                if ($current->urutan < $next->urutan) {
-                    $relationText = ($current->jenis_kelamin == 'Laki-Laki') ? "adalah kangmas dari" : "adalah mbakyu dari";
-                }
-                // Cek apakah 'current' lebih muda
-                elseif ($current->urutan > $next->urutan) {
-                    $relationText = ($current->jenis_kelamin == 'Laki-Laki') ? "adalah adhik lanang dari" : "adalah adhik wedok dari";
-                }
-
-                // Jika ada hubungan saudara (lebih tua/muda), tambahkan ke jalur
-                if ($relationText) {
-                    $detailedPath[] = "{$current->nama} {$relationText} {$next->nama}";
-                    continue;
-                }
-
-            }
 
         }
 
@@ -455,8 +390,4 @@ class LogicController extends Controller
             'detailedPath' => $detailedPath
         ];
     }
-
-
-
-
 }

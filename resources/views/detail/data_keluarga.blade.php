@@ -674,14 +674,16 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" id="navs-top-align-home" role="tabpanel">
-                                    <button type="button"
-                                        class="text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2 mt-3 mb-3"
-                                        style="background-color: #696cff;"
-                                        onmouseover="this.style.backgroundColor='#5a5de8'"
-                                        onmouseout="this.style.backgroundColor='#696cff'" data-bs-toggle="modal"
-                                        data-bs-target="#familyModal">
-                                        <span>Tambah Anggota Keluarga</span>
-                                    </button>
+                                    @auth
+                                        <button type="button"
+                                            class="text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2 mt-3 mb-3"
+                                            style="background-color: #696cff;"
+                                            onmouseover="this.style.backgroundColor='#5a5de8'"
+                                            onmouseout="this.style.backgroundColor='#696cff'" data-bs-toggle="modal"
+                                            data-bs-target="#familyModal">
+                                            <span>Tambah Anggota Keluarga</span>
+                                        </button>
+                                    @endauth
 
                                     <div class="row mb-3 g-2 align-items-center">
                                         <div class="col-md-6">
@@ -732,9 +734,11 @@
                                                     <th class="text-center"
                                                         style="width: 15%; background-color: #696cff !important; color: white; height: 60px; vertical-align: middle; border: 1px solid white !important;">
                                                         Status Kehidupan</th>
-                                                    <th class="text-center"
-                                                        style="width: 17%; background-color: #696cff !important; color: white; height: 60px; vertical-align: middle; border: 1px solid white !important;">
-                                                        Aksi</th>
+                                                    @auth
+                                                        <th class="text-center"
+                                                            style="width: 17%; background-color: #696cff !important; color: white; height: 60px; vertical-align: middle; border: 1px solid white !important;">
+                                                            Aksi</th>
+                                                    @endauth
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -772,24 +776,26 @@
                                                                 </span>
                                                             @endif
                                                         </td>
-                                                        <td class="text-center" style="border: 1px solid #dee2e6;">
-                                                            <div class="d-flex justify-content-center gap-1">
-                                                                <!-- Edit Button -->
-                                                                <button class="btn btn-sm btn-warning"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#editMemberModal{{ $anggota->id }}"
-                                                                    title="Edit">
-                                                                    Edit
-                                                                </button>
+                                                        @auth
+                                                            <td class="text-center" style="border: 1px solid #dee2e6;">
+                                                                <div class="d-flex justify-content-center gap-1">
+                                                                    <!-- Edit Button -->
+                                                                    <button class="btn btn-sm btn-warning"
+                                                                        data-bs-toggle="modal"
+                                                                        data-bs-target="#editMemberModal{{ $anggota->id }}"
+                                                                        title="Edit">
+                                                                        Edit
+                                                                    </button>
 
-                                                                <!-- Delete Button -->
-                                                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
-                                                                    data-bs-target="#deleteMemberModal{{ $anggota->id }}"
-                                                                    title="Delete">
-                                                                    Hapus
-                                                                </button>
-                                                            </div>
-                                                        </td>
+                                                                    <!-- Delete Button -->
+                                                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                                                        data-bs-target="#deleteMemberModal{{ $anggota->id }}"
+                                                                        title="Delete">
+                                                                        Hapus
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                        @endauth
                                                     </tr>
                                                 @empty
                                                     <tr>
@@ -1024,7 +1030,7 @@
             @foreach ($anggota_keluarga as $member)
                 "{{ $member->id }}": [
                 @foreach ($member->partners as $partner)
-                                                            {
+                                                                    {
                         id: "{{ $partner->id }}",
                         nama: "{{ $partner->nama }}",
                         jenis_kelamin: "{{ $partner->jenis_kelamin }}"

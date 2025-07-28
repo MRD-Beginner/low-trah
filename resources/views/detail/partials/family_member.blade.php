@@ -1,57 +1,40 @@
 <li>
-
     <a href="#" data-bs-toggle="modal" data-bs-target="#MemberModal{{ $member->id }}" title="{{ $member->nama }}"
         style="position: relative; display: inline-block;">
         <!-- Top-left position -->
         <small style="
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        background-color: {{ $member->jenis_kelamin == 'Laki-Laki' ? '#3b82f6' : '#ec4899' }};
-        color: white;
-        font-weight: bold;
-        padding: 3px 8px;
-        border-radius: 9999px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        font-size: 0.75rem;
-        line-height: 1;
-        min-width: 24px;
-        text-align: center;
-        z-index: 100;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: {{ $member->jenis_kelamin == 'Laki-Laki' ? '#3b82f6' : '#ec4899' }};
+            color: white;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 9999px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 0.75rem;
+            line-height: 1;
+            min-width: 24px;
+            text-align: center;
+            z-index: 100;
         ">{{ $member->urutan }}
         </small>
 
         <!-- Top-right position -->
         @if ($member->partners->count() > 0)
-            <small style="
-                                            position: absolute;
-                                                                        top: -10px;
-                                                                        right: -10px;
-                                                                        background: white;
-                                                                        color: white;
-                                                                        font-weight: bold;
-                                                                        border-radius: 9999px;
-                                                                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                                                                        font-size: 0.75rem;
-                                                                        line-height: 1;
-                                                                        min-width: 24px;
-                                                                        text-align: center;
-                                                                        z-index: 100;
-                                                                        "><i class='bx bxs-heart-circle bx-sm'
-                    style='color:#ff0095'></i>
+            <small
+                style="position: absolute;top: -10px;right: -10px;background: white; color: white; font-weight: bold; border-radius: 9999px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-size: 0.75rem; line-height: 1; min-width: 24px; text-align: center; z-index: 100;">
+                <i class='bx bxs-heart-circle bx-sm' style='color:#ff0095'></i>
             </small>
         @endif
 
-
         <div class="d-flex" style="position: relative;">
             @if ($member->jenis_kelamin == 'Laki-Laki')
-                <img src="{{ asset('assets\img\avatars\laki.jpg') }}" alt="Foto Default Laki-laki"
-                    style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;
-                                                                            @if ($member->status_kehidupan == 'Wafat') filter: grayscale(100%); @endif">
+                <img src="{{ asset('assets/img/avatars/laki.jpg') }}" alt="Foto Default Laki-laki" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;
+                                            @if ($member->status_kehidupan == 'Wafat') filter: grayscale(100%); @endif">
             @elseif ($member->jenis_kelamin == 'Perempuan')
-                <img src="{{ asset('assets\img\avatars\perempuan.jpg') }}" alt="Foto Default Perempuan"
-                    style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;
-                                                                            @if ($member->status_kehidupan == 'Wafat') filter: grayscale(100%); @endif">
+                <img src="{{ asset('assets/img/avatars/perempuan.jpg') }}" alt="Foto Default Perempuan" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;
+                                            @if ($member->status_kehidupan == 'Wafat') filter: grayscale(100%); @endif">
             @endif
         </div>
 
@@ -74,21 +57,19 @@
             <div class="modal-content" style="height: 600px;">
                 <div class="modal-body text-center pb-4 d-flex flex-column" style="height: 100%;">
                     @if ($member->jenis_kelamin == 'Laki-Laki')
-                        <img src="{{ asset('assets\img\avatars\laki.jpg') }}" alt="Foto Default Laki-laki"
-                            class="rounded-circle position-absolute top-0 start-50 translate-middle" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;
-                                                                                    @if ($member->status_kehidupan == 'Wafat') filter: grayscale(100%); @endif
-                                                                                    ">
+                        <img src="{{ asset('assets/img/avatars/laki.jpg') }}" alt="Foto Default Laki-laki"
+                            class="rounded-circle position-absolute top-0 start-50 translate-middle"
+                            style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;
+                                                    @if ($member->status_kehidupan == 'Wafat') filter: grayscale(100%); @endif">
                     @elseif ($member->jenis_kelamin == 'Perempuan')
-                        <img src="{{ asset('assets\img\avatars\perempuan.jpg') }}" alt="Foto Default Perempuan"
-                            class="rounded-circle position-absolute top-0 start-50 translate-middle" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;
-                                                                                    @if ($member->status_kehidupan == 'Wafat') filter: grayscale(100%); @endif
-                                                                                    ">
+                        <img src="{{ asset('assets/img/avatars/perempuan.jpg') }}" alt="Foto Default Perempuan"
+                            class="rounded-circle position-absolute top-0 start-50 translate-middle"
+                            style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;
+                                                    @if ($member->status_kehidupan == 'Wafat') filter: grayscale(100%); @endif">
                     @endif
-
                     <div class="mt-10">
                         {{ $member->nama }}
                     </div>
-
                     <div class="nav nav-tabs nav-justified mt-5 mb-3" role="tablist">
                         <div class="nav-item" role="presentation">
                             <button class="nav-link active" id="bio-tab" data-bs-toggle="tab"
@@ -112,22 +93,19 @@
                             </button>
                         </div>
                     </div>
-
                     <div class="tab-content text-start p-2 flex-grow-1" style="overflow-y: scroll; overflow-x: hidden;">
                         <div class="tab-pane fade show active" id="bio-{{ $member->id }}" role="tabpanel"
                             aria-labelledby="bio-tab">
                             <div class="row g-4">
                                 <div class="col mb-4">
                                     <label for="nama_anggota_keluarga" class="form-label">Nama</label>
-                                    <input type="text" id="nama_anggota_keluarga" name="nama_anggota_keluarga"
-                                        class="form-control" placeholder="Nama Lengkap" readonly
-                                        value="{{ $member->nama }}">
+                                    <div class="form-control bg-primary-hover">{{ $member->nama }}</div>
                                 </div>
                                 <div class="col mb-4">
                                     <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
-                                    <input type="text" id="tanggal_lahir" name="tanggal_lahir" class="form-control"
-                                        readonly
-                                        value="{{ $member->tanggal_lahir ? \Carbon\Carbon::parse($member->tanggal_lahir)->format('d-m-Y') : 'Belum diketahui' }}">
+                                    <div class="form-control bg-primary-hover">
+                                        {{ $member->tanggal_lahir ? \Carbon\Carbon::parse($member->tanggal_lahir)->format('d-m-Y') : 'Belum diketahui' }}
+                                    </div>
                                 </div>
                             </div>
                             <div class="row g-4 mb-4">
@@ -162,9 +140,7 @@
                             <div class="row g-4">
                                 <div class="col mb-4">
                                     <label for="nama_anggota_keluarga" class="form-label">Anak Ke</label>
-                                    <input type="text" id="nama_anggota_keluarga" name="nama_anggota_keluarga"
-                                        class="form-control" placeholder="Nama Lengkap" readonly
-                                        value="{{ $member->urutan }}">
+                                    <div class="form-control bg-primary-hover">{{ $member->urutan }}</div>
                                 </div>
                             </div>
                             @if ($member->alamat)
@@ -288,17 +264,15 @@
                     <div class="modal-content" style="height: 600px;">
                         <div class="modal-body text-center pb-4 d-flex flex-column" style="height: 100%;">
                             @if ($partner->jenis_kelamin == 'Laki-Laki')
-                                <img src="{{ asset('assets\img\avatars\laki.jpg') }}" alt="Foto Default Laki-laki"
+                                <img src="{{ asset('assets/img/avatars/laki.jpg') }}" alt="Foto Default Laki-laki"
                                     class="rounded-circle position-absolute top-0 start-50 translate-middle"
                                     style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;
-                                                                                                                                                                                                                    @if ($partner->status_kehidupan == 'Wafat') filter: grayscale(100%); @endif
-                                                                                                                                                                                                                    ">
+                                                                                                            @if ($partner->status_kehidupan == 'Wafat') filter: grayscale(100%); @endif">
                             @elseif ($partner->jenis_kelamin == 'Perempuan')
-                                <img src="{{ asset('assets\img\avatars\perempuan.jpg') }}" alt="Foto Default Perempuan"
+                                <img src="{{ asset('assets/img/avatars/perempuan.jpg') }}" alt="Foto Default Perempuan"
                                     class="rounded-circle position-absolute top-0 start-50 translate-middle"
                                     style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;
-                                                                                                                                                                                                                    @if ($partner->status_kehidupan == 'Wafat') filter: grayscale(100%); @endif
-                                                                                                                                                                                                                    ">
+                                                                                                            @if ($partner->status_kehidupan == 'Wafat') filter: grayscale(100%); @endif ">
                             @endif
 
                             <div class="mt-10">
@@ -336,12 +310,13 @@
                                     <div class="row g-4">
                                         <div class="col mb-4">
                                             <label class="form-label">Nama</label>
-                                            <input type="text" class="form-control" readonly value="{{ $partner->nama }}">
+                                            <div class="form-control bg-primary-hover">{{ $partner->nama }}</div>
                                         </div>
                                         <div class="col mb-4">
                                             <label class="form-label">Tanggal Lahir</label>
-                                            <input type="text" class="form-control" readonly
-                                                value="{{ $partner->tanggal_lahir ? \Carbon\Carbon::parse($partner->tanggal_lahir)->format('d-m-Y') : 'Belum diketahui' }}">
+                                            <div class="form-control bg-primary-hover">
+                                                {{ $partner->tanggal_lahir ? \Carbon\Carbon::parse($partner->tanggal_lahir)->format('d-m-Y') : 'Belum diketahui' }}
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="row g-4">
@@ -470,15 +445,15 @@
                 <div class="modal-content" style="height: 600px;">
                     <div class="modal-body text-center pb-4 d-flex flex-column" style="height: 100%;">
                         @if ($member->parent2->jenis_kelamin == 'Laki-Laki')
-                            <img src="{{ asset('assets\img\avatars\laki.jpg') }}" alt="Foto Default Laki-laki"
-                                class="rounded-circle position-absolute top-0 start-50 translate-middle" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;
-                                                                                                        @if ($member->parent2->status_kehidupan == 'Wafat') filter: grayscale(100%); @endif
-                                                                                                        ">
+                            <img src="{{ asset('assets/img/avatars/laki.jpg') }}" alt="Foto Default Laki-laki"
+                                class="rounded-circle position-absolute top-0 start-50 translate-middle"
+                                style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;
+                                                                                    @if ($member->parent2->status_kehidupan == 'Wafat') filter: grayscale(100%); @endif ">
                         @elseif ($member->parent2->jenis_kelamin == 'Perempuan')
-                            <img src="{{ asset('assets\img\avatars\perempuan.jpg') }}" alt="Foto Default Perempuan"
-                                class="rounded-circle position-absolute top-0 start-50 translate-middle" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;
-                                                                                                        @if ($member->parent2->status_kehidupan == 'Wafat') filter: grayscale(100%); @endif
-                                                                                                        ">
+                            <img src="{{ asset('assets/img/avatars/perempuan.jpg') }}" alt="Foto Default Perempuan"
+                                class="rounded-circle position-absolute top-0 start-50 translate-middle"
+                                style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%;
+                                                                                    @if ($member->parent2->status_kehidupan == 'Wafat') filter: grayscale(100%); @endif ">
                         @endif
 
                         <div class="mt-10">
@@ -516,13 +491,13 @@
                                 <div class="row g-4">
                                     <div class="col mb-4">
                                         <label class="form-label">Nama</label>
-                                        <input type="text" class="form-control" readonly
-                                            value="{{ $member->parent2->nama }}">
+                                        <div class="form-control bg-primary-hover">{{ $member->parent2->nama }}</div>
                                     </div>
                                     <div class="col mb-4">
                                         <label class="form-label">Tanggal Lahir</label>
-                                        <input type="text" class="form-control" readonly
-                                            value="{{ $member->parent2->tanggal_lahir ? \Carbon\Carbon::parse($member->parent2->tanggal_lahir)->format('d-m-Y') : 'Belum diketahui' }}">
+                                        <div class="form-control bg-primary-hover">
+                                            {{ $member->parent2->tanggal_lahir ? \Carbon\Carbon::parse($member->parent2->tanggal_lahir)->format('d-m-Y') : 'Belum diketahui' }}
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row g-4">

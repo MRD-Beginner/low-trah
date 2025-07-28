@@ -20,7 +20,7 @@ class KeluargaController extends Controller
             'password' => 'nullable|string|min:6'
         ]);
 
-        $visibility = empty($validated['password']) ? 'public' : 'private';
+        $visibility = 'public';
 
         try {
             $family = Trah::create([
@@ -128,14 +128,14 @@ class KeluargaController extends Controller
             if ($person1 && $person2) {
                 $logicController = new \App\Http\Controllers\LogicController;
 
-                // Arah Person1 -> Person2 BFS
-                $path1 = $logicController->bfs($person1, $person2->id);
+                // Arah Person1 -> Person2 dfs
+                $path1 = $logicController->dfs($person1, $person2->id);
                 $relationshipDetails = $path1
                     ? $logicController->relationshipPath($path1, $person1->nama, $person2->nama)
                     : ['relation' => 'Tidak ada hubungan yang ditemukan.', 'detailedPath' => []];
 
                 // Arah Person2 -> Person1 (dibalik)
-                $path2 = $logicController->bfs($person2, $person1->id);
+                $path2 = $logicController->dfs($person2, $person1->id);
                 $relationshipDetailsReversed = $path2
                     ? $logicController->relationshipPath($path2, $person2->nama, $person1->nama)
                     : ['relation' => 'Tidak ada hubungan yang ditemukan.', 'detailedPath' => []];
@@ -185,14 +185,14 @@ class KeluargaController extends Controller
             if ($person1 && $person2) {
                 $logicController = new \App\Http\Controllers\LogicController;
 
-                // Arah Person1 -> Person2 BFS
-                $path = $logicController->bfs($person1, $person2->id);
+                // Arah Person1 -> Person2 dfs
+                $path = $logicController->dfs($person1, $person2->id);
                 $relationshipDetails = $path
                     ? $logicController->relationshipPath($path, $person1->nama, $person2->nama)
                     : ['relation' => 'Tidak ada hubungan yang ditemukan.', 'detailedPath' => []];
 
                 // Arah Person2 -> Person1 (dibalik)
-                $pathRev = $logicController->bfs($person2, $person1->id);
+                $pathRev = $logicController->dfs($person2, $person1->id);
                 $relationshipDetailsReversed = $pathRev
                     ? $logicController->relationshipPath($pathRev, $person2->nama, $person1->nama)
                     : ['relation' => 'Tidak ada hubungan yang ditemukan.', 'detailedPath' => []];
@@ -240,6 +240,32 @@ class KeluargaController extends Controller
         ]);
     }
 
+    public function pohon_output($id)
+    {
+        $tree_id = $id;
+        $trah = Trah::with([
+            'anggotaKeluarga' => function ($query) {
+                $query->orderBy('urutan');
+            }
+        ])->findOrFail($tree_id);
+
+        $anggota_keluarga = $trah->anggotaKeluarga;
+        $pasangan_keluarga = Partner::whereIn('anggota_keluarga_id', $anggota_keluarga->pluck('id'))
+            ->orderBy('nama')
+            ->get();
+
+        // Anggota tanpa parent (root members)
+        $rootMember = $anggota_keluarga->whereNull('parent_id');
+        $rootPartner = $pasangan_keluarga;
+
+        return view('detail.data_pohon_output', [
+            'trah' => $trah,
+            'rootMember' => $rootMember,
+            'rootPartner' => $rootPartner,
+            'tree_id' => $tree_id
+        ]);
+    }
+
     public function detail_private($id, Request $request)
     {
         $trah = Trah::with([
@@ -268,14 +294,14 @@ class KeluargaController extends Controller
             if ($person1 && $person2) {
                 $logicController = new \App\Http\Controllers\LogicController;
 
-                // Arah Person1 -> Person2 BFS
-                $path1 = $logicController->bfs($person1, $person2->id);
+                // Arah Person1 -> Person2 dfs
+                $path1 = $logicController->dfs($person1, $person2->id);
                 $relationshipDetails = $path1
                     ? $logicController->relationshipPath($path1, $person1->nama, $person2->nama)
                     : ['relation' => 'Tidak ada hubungan yang ditemukan.', 'detailedPath' => []];
 
                 // Arah Person2 -> Person1 (dibalik)
-                $path2 = $logicController->bfs($person2, $person1->id);
+                $path2 = $logicController->dfs($person2, $person1->id);
                 $relationshipDetailsReversed = $path2
                     ? $logicController->relationshipPath($path2, $person2->nama, $person1->nama)
                     : ['relation' => 'Tidak ada hubungan yang ditemukan.', 'detailedPath' => []];
@@ -308,18 +334,16 @@ class KeluargaController extends Controller
         $validated = $request->validate([
             'family_name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'password' => 'nullable|string|min:6'
         ]);
 
-        $visibility = empty($validated['password']) ? 'public' : 'private';
+        $visibility = 'public';
 
         try {
             $family = Trah::create([
                 'trah_name' => $validated['family_name'],
                 'description' => $validated['description'] ?? null,
                 'created_by' => auth()->user()->name,
-                'password' => $validated['password'] ? bcrypt($validated['password']) : null,
-                'visibility' => $visibility,
+                'visibility' => 'public',
             ]);
 
             return redirect()->route('user.keluarga')

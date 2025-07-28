@@ -44,9 +44,6 @@
                                 style="width: 16%; background-color: #696cff !important; color: white; height: 60px; vertical-align: middle; border: 1px solid white !important;">
                                 Pemilik</th>
                             <th class="text-center"
-                                style="width: 16%; background-color: #696cff !important; color: white; height: 60px; vertical-align: middle; border: 1px solid white !important;">
-                                Tipe Keluarga</th>
-                            <th class="text-center"
                                 style="width: 20%; background-color: #696cff !important; color: white; height: 60px; vertical-align: middle; border: 1px solid white !important;">
                                 Deskripsi</th>
                             <th class="text-center"
@@ -73,17 +70,6 @@
                                     </div>
                                 </td>
                                 <td class="text-center" style="border: 1px solid #dee2e6;">
-                                    @if($Trah->visibility === 'public')
-                                        <span class="badge bg-success-subtle text-success rounded-pill">
-                                            Publik
-                                        </span>
-                                    @else
-                                        <span class="badge bg-warning-subtle text-warning rounded-pill">
-                                            Privat
-                                        </span>
-                                    @endif
-                                </td>
-                                <td class="text-center" style="border: 1px solid #dee2e6;">
                                     <span class="text-muted">
                                         {{ $Trah->description ?? 'Tidak ada deskripsi' }}
                                     </span>
@@ -91,26 +77,11 @@
                                 <td class="text-center" style="border: 1px solid #dee2e6;">
                                     <div class="d-flex justify-content-center gap-1">
                                         <!-- Detail Button -->
-                                        @if ($Trah->visibility === 'public')
-                                            <a href="{{ route('keluarga.detail.public', $Trah->id) }}"
-                                                class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip"
-                                                title="Lihat Detail">
-                                                Detail
-                                            </a>
-                                        @else
-                                            <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
-                                                data-bs-target="#passwordModal{{ $Trah->id }}" data-bs-toggle="tooltip"
-                                                title="Akses Privat">
-                                                Detail
-                                            </button>
-                                        @endif
-
-                                        <!-- Share Button -->
-                                        <button class="btn btn-sm btn-outline-info"
-                                            onclick="copyShareLink('{{ route('keluarga.detail.public', $Trah->id) }}')"
-                                            data-bs-toggle="tooltip" title="Bagikan Link">
-                                            Bagikan
-                                        </button>
+                                        <a href="{{ route('keluarga.detail.public', $Trah->id) }}"
+                                            class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip"
+                                            title="Lihat Detail">
+                                            Detail
+                                        </a>
 
                                         <!-- Edit Button -->
                                         <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal"
@@ -124,6 +95,13 @@
                                             data-bs-target="#deleteModal{{ $Trah->id }}" data-bs-toggle="tooltip"
                                             title="Hapus">
                                             Hapus
+                                        </button>
+
+                                        <!-- Share Button -->
+                                        <button class="btn btn-sm btn-outline-info"
+                                            onclick="copyShareLink('{{ route('keluarga.detail.public', $Trah->id) }}')"
+                                            data-bs-toggle="tooltip" title="Bagikan Link">
+                                            Bagikan
                                         </button>
                                     </div>
                                 </td>
@@ -173,28 +151,6 @@
                                     <label for="deskripsi-trah" class="form-label">Deskripsi</label>
                                     <input type="text" id="deskripsi-trah" name="description" class="form-control"
                                         placeholder="Deskripsi Singkat Keluarga">
-                                </div>
-                                <div class="col mb-0" style="display: none;">
-                                    <label for="created-by" class="form-label">Pemilik</label>
-                                    <input type="text" id="created-by" name="owner" class="form-control" value=""
-                                        required readonly>
-                                </div>
-                            </div>
-                            <div class="row g-4">
-                                <div class="col d-flex justify-content-start">
-                                    <div class="form-check-reverse form-switch mb-2">
-                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" />
-                                        <label class="form-check-label" for="flexSwitchCheckDefault">Keluarga
-                                            Privat</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row g-x-4 password-section" style="display: none;">
-                                <!-- Tambahkan class dan sembunyikan awal -->
-                                <label class="form-label">Password<span style="color: red">*</span></label>
-                                <div class="input-group mb-4">
-                                    <input type="password" id="passwordSection" name="password" class="form-control"
-                                        aria-label="Password input">
                                 </div>
                             </div>
                         </div>
@@ -260,18 +216,6 @@
                                         <input type="text" id="deskripsi-trah" name="description" class="form-control"
                                             placeholder="Deskripsi Singkat Keluarga" value="{{ $Trah->description }}">
                                     </div>
-                                    <div class="col mb-0">
-                                        <label for="created-by" class="form-label">Pemilik</label>
-                                        <input type="text" id="created-by" name="owner" class="form-control"
-                                            value="{{ auth()->user()->name }}" required readonly>
-                                    </div>
-                                </div>
-                                <div class="row g-x-4">
-                                    <label class="form-label">Password (*Kosongkan Jika Tidak Diubah)</label>
-                                    <div class="input-group mb-4">
-                                        <input type="password" id="password" name="password" class="form-control"
-                                            aria-label="Password input">
-                                    </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -284,35 +228,7 @@
             </div>
         @endforeach
 
-        @foreach ($trah as $Trah)
-            @if ($Trah->visibility === 'private')
-                <!-- Modal untuk setiap trah private -->
-                <div class="modal fade" id="passwordModal{{ $Trah->id }}" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <form action="{{ route('keluarga.verify.password', $Trah->id) }}" method="POST">
-                                @csrf
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Akses Trah {{ $Trah->trah_name }}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label for="password{{ $Trah->id }}" class="form-label">Password</label>
-                                        <input type="password" class="form-control" id="password{{ $Trah->id }}" name="password"
-                                            required>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                    <button type="submit" class="btn btn-primary">Masuk</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            @endif
-        @endforeach
+
     </div>
 
     <!-- Custom Styles -->
@@ -547,39 +463,12 @@
             });
         }
 
-        // Toggle password visibility for add modal
-        document.getElementById('flexSwitchCheckDefault').addEventListener('change', function () {
-            const passwordSection = document.querySelector('.password-section');
-            const passwordInput = document.getElementById('passwordSection');
-
-            if (this.checked) {
-                passwordSection.style.display = 'block';
-                passwordInput.required = true;
-            } else {
-                passwordSection.style.display = 'none';
-                passwordInput.required = false;
-                passwordInput.value = '';
-            }
-        });
-
         // Initialize tooltips
         document.addEventListener('DOMContentLoaded', function () {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
             var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
-        });
-
-        // Form validation for add modal
-        document.querySelector('#addModal form').addEventListener('submit', function (e) {
-            const isPrivate = document.getElementById('flexSwitchCheckDefault').checked;
-            const password = document.getElementById('passwordSection').value;
-
-            if (isPrivate && !password.trim()) {
-                e.preventDefault();
-                alert('Password diperlukan untuk keluarga privat!');
-                document.getElementById('passwordSection').focus();
-            }
         });
     </script>
 </x-app-layout>

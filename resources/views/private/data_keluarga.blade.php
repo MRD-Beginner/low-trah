@@ -674,14 +674,17 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane fade show active" id="navs-top-align-home" role="tabpanel">
-                                    <button type="button"
-                                        class="text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2 mt-3 mb-3"
-                                        style="background-color: #696cff;"
-                                        onmouseover="this.style.backgroundColor='#5a5de8'"
-                                        onmouseout="this.style.backgroundColor='#696cff'" data-bs-toggle="modal"
-                                        data-bs-target="#familyModal">
-                                        <span>Tambah Anggota Keluarga</span>
-                                    </button>
+                                    @auth
+                                        <button type="button"
+                                            class="text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center gap-2 mt-3 mb-3"
+                                            style="background-color: #696cff;"
+                                            onmouseover="this.style.backgroundColor='#5a5de8'"
+                                            onmouseout="this.style.backgroundColor='#696cff'" data-bs-toggle="modal"
+                                            data-bs-target="#familyModal">
+                                            <span>Tambah Anggota Keluarga</span>
+                                        </button>
+                                    @endauth
+
 
                                     <div class="row mb-3 g-2 align-items-center">
                                         <div class="col-md-6">
@@ -1024,7 +1027,7 @@
             @foreach ($anggota_keluarga as $member)
                 "{{ $member->id }}": [
                 @foreach ($member->partners as $partner)
-                                                            {
+                                                                {
                         id: "{{ $partner->id }}",
                         nama: "{{ $partner->nama }}",
                         jenis_kelamin: "{{ $partner->jenis_kelamin }}"
